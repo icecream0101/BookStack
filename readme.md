@@ -4,10 +4,9 @@
 - [BookStack官方文档](https://www.bookstackapp.com/docs/)
 
 ### Docker方式
-    官方提供2个版本的镜像:
+    官方提供2个版本的镜像，由于solidnerd会报qt的错误，最后选择了linuxserver版本:
 - [LinuxServer.io](https://github.com/linuxserver/docker-bookstack) 
 - [solidnerd](https://github.com/solidnerd/docker-bookstack)
-   由于solidnerd会报qt的错误，最后选择了linuxserver版本
     
 1. 镜像构建
 - 官方镜像没有中文字体，导出会乱码
