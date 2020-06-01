@@ -33,7 +33,7 @@ docker build -f Dockerfile -t bookstack:1.0.0 .
 - 启动方式采用Dockercompose
 - 应用持久化目录:/home/data/bookstack/config
 - mysql持久化目录:/home/data/bookstack/db
-- 映射访问端口:8080
+- 映射访问端口:80
 - 具体启动脚本如下:
 ```yaml
 version: "2"
