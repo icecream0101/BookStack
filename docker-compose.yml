@@ -1,48 +1,55 @@
 # This is a Docker Compose configuration
 # intended for development purposes only
 
-version: '3'
-
-volumes:
-  db: {}
-
+version: "2"
 services:
-  db:
-    image: mysql:8
+  bookstack_db:
+    image: mysql:5.7.30
+    container_name: bookstack_db
     environment:
-      MYSQL_DATABASE: bookstack-test
-      MYSQL_USER: bookstack-test
-      MYSQL_PASSWORD: bookstack-test
-      MYSQL_RANDOM_ROOT_PASSWORD: 'true'
-    command: --default-authentication-plugin=mysql_native_password
+        - PUID=1000
+        - PGID=1000
+        - MYSQL_ROOT_PASSWORD=icecream@2020
+        - MYSQL_DATABASE=bookstack
+        - MYSQL_USER=icecream
+        - MYSQL_PASSWORD=icecream@2020
     volumes:
-      - db:/var/lib/mysql
-  app:
-    build:
-      context: .
-      dockerfile: ./dev/docker/Dockerfile
+        - /home/data/bookstack/db:/var/lib/mysql
+    ports:
+      - 3307:3306
+    restart: unless-stopped
+
+  bookstack:
+    image: bookstack:1.0.0
+    container_name: bookstack
     environment:
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: bookstack-test
-      DB_USERNAME: bookstack-test
-      DB_PASSWORD: bookstack-test
-      MAIL_DRIVER: smtp
-      MAIL_HOST: mailhog
-      MAIL_PORT: 1025
-    ports:
-      - ${DEV_PORT:-8080}:80
+      - PUID=1000
+      - PGID=1000
+      - DB_HOST=bookstack_db
+      - DB_DATABASE=bookstack
+      - DB_USERNAME=icecream
+      - DB_PASSWORD=icecream@2020
+      # Mail Setting
+      - MAIL_DRIVER=smtp
+      - MAIL_FROM=icecream@qq.com
+      - MAIL_FROM_NAME="BookStack"
+      # SMTP mail options
+      - MAIL_HOST=smtp.exmail.qq.com
+      - MAIL_PORT=465
+      - MAIL_USERNAME=icecream@qq.com
+      - MAIL_PASSWORD=icecream
+      - MAIL_ENCRYPTION=ssl
+      - APP_AUTO_LANG_PUBLIC=false
+      # pdf渲染
+      - WKHTMLTOPDF=/usr/bin/wkhtmltopdf
+      # 存储为本地模式
+      - STORAGE_TYPE=local
+      # 默认语言为简体中文
+      - APP_LANG=zh_CN
     volumes:
-      - ./:/app
-    entrypoint: /app/dev/docker/entrypoint.app.sh
-  node:
-    image: node:alpine
-    working_dir: /app
-    volumes:
-      - ./:/app
-    entrypoint: /app/dev/docker/entrypoint.node.sh
-  mailhog:
-    image: mailhog/mailhog
+      - /home/data/bookstack/config:/config
     ports:
-      - ${DEV_MAIL_PORT:-8025}:8025
+      - 8080:80
+    restart: unless-stopped
+    depends_on:
+      - bookstack_db
