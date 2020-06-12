@@ -49,6 +49,8 @@ services:
         - MYSQL_DATABASE=bookstack
         - MYSQL_USER=icecream
         - MYSQL_PASSWORD=icecream@2020
+        # 时区设置
+        - TZ=Asia/Shanghai
     volumes:
         - /home/data/bookstack/db:/var/lib/mysql
     ports:
@@ -82,6 +84,8 @@ services:
       - STORAGE_TYPE=local
       # 默认语言为简体中文
       - APP_LANG=zh_CN
+      # 时区设置
+      - TZ=Asia/Shanghai
     volumes:
       - /home/data/bookstack/config:/config
     ports:
